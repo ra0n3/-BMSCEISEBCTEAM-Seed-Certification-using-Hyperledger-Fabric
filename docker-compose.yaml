@@ -1,0 +1,150 @@
+version: '2'
+
+services:
+  farmer-ca:
+    container_name: farmer-ca
+    extends:
+      file: ./ca-base.yaml
+      service: ca-base
+    image: farmer-ca
+    ports:
+    - 7054:7054
+
+  certificateagency-ca:
+    container_name: certificateagency-ca
+    extends:
+      file: ./ca-base.yaml
+      service: ca-base
+    image: certificateagency-ca
+    ports:
+    - 8054:7054
+
+  distributor-ca:
+    container_name: distributor-ca
+    extends:
+      file: ./ca-base.yaml
+      service: ca-base
+    image: distributor-ca
+    ports:
+    - 9054:7054
+  
+  retailer-ca:
+    container_name: retailer-ca
+    extends:
+      file: ./ca-base.yaml
+      service: ca-base
+    image: retailer-ca
+    ports:
+    - 10054:7054
+
+
+  orderer0:
+    container_name: orderer0
+    image: orderer
+    environment:
+    - ORDERER_GENERAL_LOGLEVEL=debug
+    - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+    - ORDERER_GENERAL_GENESISMETHOD=file
+    - ORDERER_GENERAL_GENESISFILE=/orderer/crypto/genesis.block
+    - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+    - ORDERER_GENERAL_LOCALMSPDIR=/orderer/crypto/msp
+    - ORDERER_GENERAL_TLS_ENABLED=false
+    - ORDERER_GENERAL_TLS_PRIVATEKEY=/orderer/crypto/tls/server.key
+    - ORDERER_GENERAL_TLS_CERTIFICATE=/orderer/crypto/tls/server.crt
+    - ORDERER_GENERAL_TLS_ROOTCAS=[/orderer/crypto/tls/ca.crt]
+    working_dir: /orderer
+    command: orderer
+    ports:
+    - 7050:7050
+
+  farmer-peer:
+    container_name: farmer-peer
+    extends:
+      file: ./peer-base.yaml
+      service: peer-base
+    image: farmer-peer
+    environment:
+    - CORE_PEER_ID=farmer-peer
+    - CORE_PEER_ADDRESS=farmer-peer:7051
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=farmer-peer:7051
+    - CORE_PEER_LOCALMSPID=FarmerOrgMSP
+    ports:
+    - 7051:7051
+    - 7053:7053
+    depends_on:
+    - orderer0
+
+  certificateagency-peer:
+    container_name: certificateagency-peer
+    extends:
+      file: ./peer-base.yaml
+      service: peer-base
+    image: certificateagency-peer
+    environment:
+    - CORE_PEER_ID=certificateagency-peer
+    - CORE_PEER_ADDRESS=certificateagency-peer:7051
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=certificateagency-peer:7051
+    - CORE_PEER_LOCALMSPID=CertificateAgencyOrgMSP
+    ports:
+    - 8051:7051
+    - 8053:7053
+    depends_on:
+    - orderer0
+    - farmer-peer
+ 
+  distributor-peer:
+    container_name: distributor-peer
+    extends:
+      file: ./peer-base.yaml
+      service: peer-base
+    image: distributor-peer
+    environment:
+    - CORE_PEER_ID=distributor-peer
+    - CORE_PEER_ADDRESS=distributor-peer:7051
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=distributor-peer:7051
+    - CORE_PEER_LOCALMSPID=DistributorOrgMSP
+    ports:
+    - 9051:7051
+    - 9053:7053
+    depends_on:
+    - orderer0
+    - farmer-peer
+    - certificateagency-peer
+  
+  retailer-peer:
+    container_name: retailer-peer
+    extends:
+      file: ./peer-base.yaml
+      service: peer-base
+    image: retailer-peer
+    environment:
+    - CORE_PEER_ID=retailer-peer
+    - CORE_PEER_ADDRESS=retailer-peer:7051
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=retailer-peer:7051
+    - CORE_PEER_LOCALMSPID=RetailerOrgMSP
+    ports:
+    - 10051:7051
+    - 10053:7053
+    depends_on:
+    - orderer0
+
+
+  # web:
+  #   container_name: web
+  #   image: web
+  #   environment:
+  #   - PORT=3000
+  #   - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
+  #   - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:latest
+  #   ports:
+  #   - 3000:3000
+  #   volumes:
+  #   - /var/run/:/host/var/run/
+  #   depends_on:
+  #   - orderer0
+  #   - farmer-ca
+  #   - farmer-peer
+  #   - certificateagency-ca
+  #   - certificateagency-peer
+  #   - distributor-ca
+  #   - distributor-peer

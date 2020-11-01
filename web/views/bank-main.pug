@@ -1,0 +1,24 @@
+extends _layout
+
+block content
+  .ibm-columns(data-items='.ibm-card' data-widget='setsameheight')
+    .ibm-col-6-2.ibm-col-med-2-1.ibm-col-small-1-1
+      .ibm-card
+        .ibm-card__image
+          img(src='/img/icons/claim self-service.svg')
+        .ibm-card__content
+          h3.ibm-h3 #{ __('Sign Up') }
+          p #{ __('Claim Self-Service Description') }
+          p.ibm-ind-link
+            a.ibm-forward-link(href='/bank/signup')
+              |  #{ __('Sign Up') }
+    .ibm-col-6-2.ibm-col-med-2-1.ibm-col-small-1-1
+      .ibm-card
+        .ibm-card__image
+          img(src='/img/icons/claim processing.svg')
+        .ibm-card__content
+          h3.ibm-h3 #{ __('Log In') }
+          p #{ __('Claim Processing Description') }
+          p.ibm-ind-link
+            a.ibm-forward-link(href='/insurance/claim-processing')
+              |  #{ __('Process New Claims') }

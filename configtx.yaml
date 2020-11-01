@@ -1,0 +1,72 @@
+---
+Profiles:
+  ThreeOrgsGenesis:
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations:
+      - *OrdererOrg
+    Consortiums:
+      KYCConsortium:
+        Organizations:
+        - *FarmerOrg
+        - *CertificateAgencyOrg
+        - *DistributorOrg
+        - *RetailerOrg
+  ThreeOrgsChannel:
+    Consortium: SeedConsortium
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+      - *FarmerOrg
+      - *CertificateAgencyOrg
+      - *DistributorOrg
+      - *RetailerOrg
+
+Organizations:
+- &OrdererOrg
+  Name: OrdererOrg
+  ID: OrdererMSP
+  MSPDir: cli/peers/ordererOrganizations/orderer-org/msp
+- &FarmerOrg
+  Name: FarmerOrgMSP
+  ID: FarmerOrgMSP
+  MSPDir: cli/peers/peerOrganizations/farmer-org/msp
+  AnchorPeers:
+  - Host: farmer-peer
+    Port: 7051
+- &CertificateAgencyOrg
+  Name: CertificateAgencyOrgMSP
+  ID: PCertificateAgencyOrgMSP
+  MSPDir: cli/peers/peerOrganizations/certificateAgency-org/msp
+  AnchorPeers:
+  - Host: certificateAgency-peer
+    Port: 7051
+- &DistributorOrg
+  Name: DistributorOrgMSP
+  ID: DistributorOrgMSP
+  MSPDir: cli/peers/peerOrganizations/distributor-org/msp
+  AnchorPeers:
+  - Host: distributor-peer
+    Port: 7051
+- &RetailerOrg
+  Name: RetailerOrgMSP
+  ID: RetailerOrgMSP
+  MSPDir: cli/peers/peerOrganizations/retailer-org/msp
+  AnchorPeers:
+  - Host: retailer-peer
+    Port: 7051
+
+
+Orderer: &OrdererDefaults
+  OrdererType: solo
+  Addresses:
+  - orderer0:7050
+  BatchTimeout: 2s
+  BatchSize:
+    MaxMessageCount: 10
+    AbsoluteMaxBytes: 99 MB
+    PreferredMaxBytes: 512 KB
+  Organizations:
+
+Application: &ApplicationDefaults
+  Organizations:

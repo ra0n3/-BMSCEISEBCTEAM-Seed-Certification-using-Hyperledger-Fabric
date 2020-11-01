@@ -1,0 +1,9 @@
+{
+	"network-configs": {
+		"first-network": {
+			"name": "kyc-network",
+			"profile": "./connection-profile/kyc-network.json"
+		}
+	},
+	"license": "Apache-2.0"
+}

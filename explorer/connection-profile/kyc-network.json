@@ -1,0 +1,111 @@
+{
+	"name": "kyc-network",
+	"version": "1.0.0",
+	"client": {
+		"tlsEnable": true,
+		"adminUser": "admin",
+		"adminPassword": "adminpw",
+		"adminCredential": {
+			"id": "exploreradmin",
+			"password": "exploreradminpw"
+		},
+		"enableAuthentication": false,
+		"organization": "BankOrgMSP",
+		"channel": "default"
+	},
+	"channels": {
+		"default": {
+			"peers": {
+				"bank-peer": {},
+				"passport-peer": {},
+				"govt-peer": {}
+			},
+			"connection": {
+				"timeout": {
+					"peer": {
+						"endorser": "6000",
+						"eventHub": "6000",
+						"eventReg": "6000"
+					}
+				}
+			}
+		}
+	},
+	"organizations": {
+		"BankOrgMSP": {
+			"mspid": "BankOrgMSP",
+			"fullpath": false,
+			"adminPrivateKey": {
+				"path": "/tmp/crypto/peerOrganizations/bank-org/users/Admin@bank-org/msp/keystore/priv_sk"
+			},
+			"peers": ["bank-peer"],
+			"signedCert": {
+				"path": "/tmp/crypto/peerOrganizations/bank-org/users/Admin@bank-org/msp/signcerts/Admin@bank-org-cert.pem"
+			}
+		},
+		"PassportOrgMSP": {
+			"mspid": "PassportOrgMSP",
+			"fullpath": false,
+			"adminPrivateKey": {
+				"path": "/tmp/crypto/peerOrganizations/pasport-org/users/Admin@passport-org/msp/keystore/priv_sk"
+			},
+			"peers": ["passport-peer"],
+			"signedCert": {
+				"path": "/tmp/crypto/peerOrganizations/passport-org/users/Admin@passport-org/msp/signcerts/Admin@passport-org-cert.pem"
+			}
+		},
+		"GovtOrgMSP": {
+			"mspid": "GovtOrgMSP",
+			"fullpath": false,
+			"adminPrivateKey": {
+				"path": "/tmp/crypto/peerOrganizations/govt-org/users/Admin@govt-org/msp/keystore/priv_sk"
+			},
+			"peers": ["govt-peer"],
+			"signedCert": {
+				"path": "/tmp/crypto/peerOrganizations/govt-org/users/Admin@govt-org/msp/signcerts/Admin@govt-org-cert.pem"
+			}
+		},
+		"OrdererMSP": {
+			"mspid": "OrdererMSP",
+			"url": "grpc://order0-peer:7050",
+			"adminPrivateKey": {
+				"path": "/tmp/crypto/ordererOrganizations/oderer-org/users/Admin@orderer-org/msp/keystore/priv_sk"
+			}
+		}
+	},
+	"peers": {
+		"bank-peer": {
+			"fullpath": false,
+			"tlsCACerts": {
+				"path": "/tmp/crypto/peerOrganizations/bank-org/peers/bank-peer/tls/ca.crt"
+			},
+			"url": "grpc://bank-peer:7051",
+			"eventUrl": "grpc://bank-peer:7053",
+			"grpcOptions": {
+				"ssl-target-name-override": "bank-peer"
+			}
+		},
+		"passport-peer": {
+			"fullpath": false,
+			"tlsCACerts": {
+				"path": "/tmp/crypto/peerOrganizations/passport-org/peers/passport-peer/tls/ca.crt"
+			},
+			"url": "grpc://bank-peer:7051",
+			"eventUrl": "grpc://bank-peer:7053",
+			"grpcOptions": {
+				"ssl-target-name-override": "passport-peer"
+			}
+		},
+		"govt-peer": {
+			"fullpath": false,
+			"tlsCACerts": {
+				"path": "/tmp/crypto/peerOrganizations/govt-org/peers/govt-peer/tls/ca.crt"
+			},
+			"url": "grpc://govt-peer:7051",
+			"eventUrl": "grpc://govt-peer:7053",
+			"grpcOptions": {
+				"ssl-target-name-override": "govt-peer"
+			}
+		}
+	}
+}
