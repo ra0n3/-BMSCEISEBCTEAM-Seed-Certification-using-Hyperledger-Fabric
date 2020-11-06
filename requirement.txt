@@ -1,0 +1,7 @@
+Software Requirements for this projects are 
+  - Dockers
+  - Hyperledger Fabric
+  - Hyperledger Explorer
+  - Mac/Ubuntu
+  - npm
+  
